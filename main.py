@@ -1,72 +1,49 @@
-#else if elif
-   # n = int(input().strip())
+def steadyGene(gene):
+    n = len(gene)
+    docelowa_ilosc = n // 4
 
-    #if n % 2 != 0:
-    #    print("Weird")
-    #elif 2 < n <= 5:
-    #    print("Not Weird")
-    #elif 6 <= n <= 20:
-    #    print("Weird")
-    #else:
-    #    print("Not Weird")
+    licznik = {}
+    for litera in gene:
+        if litera not in licznik:
+            licznik[litera] = 0
+        licznik[litera] += 1
 
-#range
-#n= int(input())
-#for i in range(1 , n+1):
-    #print (i, end="")
+    nadmiar = {}
+    for litera in ['A', 'C', 'G', 'T']:
+        if litera not in licznik:
+            licznik[litera] = 0
+        if licznik[litera] > docelowa_ilosc:
+            nadmiar[litera] = licznik[litera] - docelowa_ilosc
 
-# list of words and len
-#words = ['cat', 'window', 'defenestrate']
-#for w in words:
-#    print (w,(len(w)))
+    if len(nadmiar) == 0:
+        return 0
 
-#break
-#for n in range(2, 10):
-#    for x in range(2, n):
-#        if n % x ==0:
-#            print(f"{n}={x}*{n/x}")
-#            break
+    lewy = 0
+    min_dlugosc = n + 1
+    okno = {}
 
-#continue - prawie jak break tylko pozwala petli dojsc do konca
+    for prawy in range(n):
+        litera = gene[prawy]
+        if litera not in okno:
+            okno[litera] = 0
+        okno[litera] += 1
 
-#petla w petli w ktore jest else
-#for n in range(2, 10):
-#    for x in range(2, n):
-#        if n % x == 0
-#           print (n, 'composite')
-#            break
-#    else:
-#        print(n, 'prime')
+        while lewy <= prawy:
+            czy_ok = True
+            for lit, ile in nadmiar.items():
+                if lit not in okno or okno[lit] < ile:
+                    czy_ok = False
+                    break
 
-#function 'is_leap'
-def is_leap(year):
-    if (year % 4 == 0):
-        if (year % 100 == 0):
-            if (year % 400 == 0):
-                return True
+            if czy_ok:
+                dlugosc = prawy - lewy + 1
+                if dlugosc < min_dlugosc:
+                    min_dlugosc = dlugosc
+
+                litera_lewa = gene[lewy]
+                okno[litera_lewa] -= 1
+                lewy += 1
             else:
-                return False
-        else:
-            return True
-    else:
-        return False
-#импользуя функцию проверин переменную високосный или нет
-#year = int(input())
-#print(is_leap(year))
-#or также можно так
-#for y in range(1990, 2025):
-#    if is_leap(y):
-#        print(y, "— високосный")
-#    else:
-#        print(y, "— обычный")
+                break
 
-
-    n = int(input())
-    arr = list(map(int, input().split())) #Метод .split() разделяет строку на части (по пробелам, если не указать другой
-    # символ). Функция map() применяет какую-то функцию ко всем элементам списка «Применить функцию int() к каждому элементу списка.»
-
-    max_score = max(arr)
-    while max_score in arr:
-        arr.remove(max_score)
-
-    print(max(arr))
+    return min_dlugosc

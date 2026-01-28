@@ -1,72 +1,43 @@
-#else if elif
-   # n = int(input().strip())
+def connectedCell(matrix):
+    n = len(matrix)
+    m = len(matrix[0])
 
-    #if n % 2 != 0:
-    #    print("Weird")
-    #elif 2 < n <= 5:
-    #    print("Not Weird")
-    #elif 6 <= n <= 20:
-    #    print("Weird")
-    #else:
-    #    print("Not Weird")
+    odwiedzone = []
+    for i in range(n):
+        wiersz = []
+        for j in range(m):
+            wiersz.append(False)
+        odwiedzone.append(wiersz)
 
-#range
-#n= int(input())
-#for i in range(1 , n+1):
-    #print (i, end="")
+    max_rozmiar = 0
 
-# list of words and len
-#words = ['cat', 'window', 'defenestrate']
-#for w in words:
-#    print (w,(len(w)))
+    def dfs(wiersz, kolumna):
+        if wiersz < 0 or wiersz >= n or kolumna < 0 or kolumna >= m:
+            return 0
 
-#break
-#for n in range(2, 10):
-#    for x in range(2, n):
-#        if n % x ==0:
-#            print(f"{n}={x}*{n/x}")
-#            break
+        if odwiedzone[wiersz][kolumna] or matrix[wiersz][kolumna] == 0:
+            return 0
 
-#continue - prawie jak break tylko pozwala petli dojsc do konca
+        odwiedzone[wiersz][kolumna] = True
+        rozmiar = 1
 
-#petla w petli w ktore jest else
-#for n in range(2, 10):
-#    for x in range(2, n):
-#        if n % x == 0
-#           print (n, 'composite')
-#            break
-#    else:
-#        print(n, 'prime')
+        # 8 kierunków (góra, dół, lewo, prawo i 4 przekątne)
+        rozmiar += dfs(wiersz - 1, kolumna)  # góra
+        rozmiar += dfs(wiersz + 1, kolumna)  # dół
+        rozmiar += dfs(wiersz, kolumna - 1)  # lewo
+        rozmiar += dfs(wiersz, kolumna + 1)  # prawo
+        rozmiar += dfs(wiersz - 1, kolumna - 1)  # góra-lewo
+        rozmiar += dfs(wiersz - 1, kolumna + 1)  # góra-prawo
+        rozmiar += dfs(wiersz + 1, kolumna - 1)  # dół-lewo
+        rozmiar += dfs(wiersz + 1, kolumna + 1)  # dół-prawo
 
-#function 'is_leap'
-def is_leap(year):
-    if (year % 4 == 0):
-        if (year % 100 == 0):
-            if (year % 400 == 0):
-                return True
-            else:
-                return False
-        else:
-            return True
-    else:
-        return False
-#импользуя функцию проверин переменную високосный или нет
-#year = int(input())
-#print(is_leap(year))
-#or также можно так
-#for y in range(1990, 2025):
-#    if is_leap(y):
-#        print(y, "— високосный")
-#    else:
-#        print(y, "— обычный")
+        return rozmiar
 
+    for i in range(n):
+        for j in range(m):
+            if matrix[i][j] == 1 and not odwiedzone[i][j]:
+                rozmiar_regionu = dfs(i, j)
+                if rozmiar_regionu > max_rozmiar:
+                    max_rozmiar = rozmiar_regionu
 
-    n = int(input())
-    arr = list(map(int, input().split())) #Метод .split() разделяет строку на части (по пробелам, если не указать другой
-    # символ). Функция map() применяет какую-то функцию ко всем элементам списка «Применить функцию int() к каждому элементу списка.»
-
-    max_score = max(arr)
-    while max_score in arr:
-        arr.remove(max_score)
-
-    print(max(arr))
+    return max_rozmiar
